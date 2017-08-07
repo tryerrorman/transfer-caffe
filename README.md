@@ -1,5 +1,9 @@
 # transfer-caffe
 
+this is a caffe repository for transfer learning. We fork the repository  form thuml/transfer-caffe(https://github.com/thuml/transfer-caffe) and make our modifications. The main modifications are listed as follow:
+
+ - Add 'domain confusion layer' described in paper "Simultaneous deep transfer across domains and tasks"
+
 This is a caffe repository for transfer learning. We fork the repository with version ID `29cdee7` from [Caffe](https://github.com/BVLC/caffe) and make our modifications. The main modifications are listed as follow:
 
 - Add `mmd layer` described in paper "Learning Transferable Features with Deep Adaptation Networks".

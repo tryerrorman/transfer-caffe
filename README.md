@@ -4,8 +4,7 @@ this is a caffe repository for transfer learning. We fork the repository  form t
 
  - Add 'domain confusion layer' described in paper "Simultaneous deep transfer across domains and tasks"
 
-This is a caffe repository for transfer learning. We fork the repository with version ID `29cdee7` from [Caffe](https://github.com/BVLC/caffe) and make our modifications. The main modifications are listed as follow:
-
+The following works are conducted by thuml:
 - Add `mmd layer` described in paper "Learning Transferable Features with Deep Adaptation Networks".
 - Add `entropy layer` and `outerproduct layer` described in paper "Unsupervised Domain Adaptation with Residual Transfer Networks".
 - Copy `grl layer` and `messenger.hpp` from repository [Caffe](https://github.com/ddtm/caffe/tree/grl).

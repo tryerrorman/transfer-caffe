@@ -22,7 +22,7 @@ class DomainConfusionInnerProductLayer : public Layer<Dtype> {
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
 
-  virtual inline const char* type() const { return "InnerProduct"; }
+  virtual inline const char* type() const { return "DomainConfusionInnerProduct"; }
   virtual inline int ExactNumBottomBlobs() const { return 1; }
   virtual inline int ExactNumTopBlobs() const { return 2; }
 
@@ -42,6 +42,8 @@ class DomainConfusionInnerProductLayer : public Layer<Dtype> {
   bool bias_term_;
   Blob<Dtype> bias_multiplier_;
   bool transpose_;  ///< if true, assume transposed weights
+ // bool domain_fusion_;  /// <if true, assume domain confusion
+
 
 };
 

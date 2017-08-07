@@ -51,6 +51,7 @@ void DomainConfusionInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype
     }
   }  // parameter initialization
   this->param_propagate_down_.resize(this->blobs_.size(), true);
+
 }
 
 template <typename Dtype>
@@ -71,9 +72,9 @@ void DomainConfusionInnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>
   vector<int> top_shape = bottom[0]->shape();
   top_shape.resize(axis + 1);
   top_shape[axis] = N_;
-  for (int i = 0; i < top.size(); ++i)
+  for (int top_id = 0; top_id < top.size(); ++top_id)
   {
-  	top[i]->Reshape(top_shape);
+  	top[top_id]->Reshape(top_shape);
   }
   // Set up the bias multiplier
   if (bias_term_) {
@@ -88,25 +89,26 @@ void DomainConfusionInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtyp
       const vector<Blob<Dtype>*>& top)
 {
   const Dtype* bottom_data = bottom[0]->cpu_data();
-  Dtype* top_data = top[0]->mutable_cpu_data();
-  const Dtype* weight = this->blobs_[0]->cpu_data();
-  caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
+
+    Dtype* top_data = top[0]->mutable_cpu_data();
+    const Dtype* weight = this->blobs_[0]->cpu_data();
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
       M_, N_, K_, (Dtype)1.,
       bottom_data, weight, (Dtype)0., top_data);
-  if (bias_term_) {
-    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
+    if (bias_term_) {
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
         bias_multiplier_.cpu_data(),
         this->blobs_[1]->cpu_data(), (Dtype)1., top_data);
-  }
-  Dtype* top_data1 = top[1]->mutable_cpu_data();
-  caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
+    }
+    top_data = top[1]->mutable_cpu_data();
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
       M_, N_, K_, (Dtype)1.,
-      bottom_data, weight, (Dtype)0., top_data1);
-  if (bias_term_) {
-    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
+      bottom_data, weight, (Dtype)0., top_data);
+    if (bias_term_) {
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
         bias_multiplier_.cpu_data(),
-        this->blobs_[1]->cpu_data(), (Dtype)1., top_data1);
-  }
+        this->blobs_[1]->cpu_data(), (Dtype)1., top_data);
+    }
 }
 
 template <typename Dtype>
@@ -137,7 +139,9 @@ void DomainConfusionInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<Dty
         this->blobs_[1]->mutable_cpu_diff());
   }
   if (propagate_down[0]) {
+
     const Dtype* top_diff = top[1]->cpu_diff();
+
     // Gradient with respect to bottom data
     if (transpose_) {
       caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasTrans,
@@ -158,7 +162,6 @@ STUB_GPU(DomainConfusionInnerProductLayer);
 #endif
 
 INSTANTIATE_CLASS(DomainConfusionInnerProductLayer);
-
 REGISTER_LAYER_CLASS(DomainConfusionInnerProduct);
 
 }// namespace caffe
